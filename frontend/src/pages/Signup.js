@@ -40,7 +40,7 @@ export default function Signup({ onSwitch }) {
     }
   };
 
-  // Determine if we are on a mobile screen (typical breakpoint 480px)
+  // Determine if we are on a mobile screen
   const isMobile = width <= 480;
   const s = useMemo(() => styles(dark, isMobile), [dark, isMobile]);
 
@@ -120,21 +120,19 @@ const styles = (dark, isMobile) => ({
   page: {
     minHeight: '100vh',
     display: 'flex',
-    // Moves the card to the top on mobile so it doesn't look lost in the middle
-    alignItems: isMobile ? 'flex-start' : 'center', 
+    alignItems: 'center', // Keep centered as per the screenshot
     justifyContent: 'center',
     background: dark ? '#0f0f13' : '#f4f6fb',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     position: 'relative',
-    // Minimal side padding to maximize card width on mobile
-    padding: isMobile ? '40px 15px' : '0', 
+    padding: isMobile ? '24px' : '0', 
     boxSizing: 'border-box',
   },
   themeBtn: {
     position: 'absolute',
     top: isMobile ? 15 : 20, 
     right: isMobile ? 15 : 20,
-    background: dark ? '#18181f' : '#fff',
+    background: 'transparent',
     border: `1px solid ${dark ? '#333' : '#ddd'}`,
     borderRadius: 8,
     padding: '6px 12px',
@@ -145,40 +143,39 @@ const styles = (dark, isMobile) => ({
   card: {
     background: dark ? '#18181f' : '#ffffff',
     border: `1px solid ${dark ? '#2a2a35' : '#e5e7ef'}`,
-    borderRadius: 16,
-    padding: isMobile ? '32px 20px' : '40px 36px',
+    borderRadius: 24, // More rounded corners like the image
+    padding: isMobile ? '48px 28px' : '40px 36px', // Extra vertical padding
     width: '100%',
-    // Allows the card to take up more space on mobile devices
-    maxWidth: isMobile ? '100%' : 400, 
-    boxShadow: dark ? '0 20px 60px rgba(0,0,0,0.4)' : '0 8px 40px rgba(0,0,0,0.08)',
+    maxWidth: isMobile ? '450px' : '400px', // Wider on mobile to fill screen
+    boxShadow: dark ? '0 20px 60px rgba(0,0,0,0.5)' : '0 8px 40px rgba(0,0,0,0.08)',
     boxSizing: 'border-box',
   },
-  logo: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 },
-  logoIcon: { fontSize: 24 },
-  logoText: { fontSize: 20, fontWeight: 700, color: dark ? '#fff' : '#1a1a2e', letterSpacing: '-0.5px' },
-  title: { margin: '0 0 4px', fontSize: isMobile ? 22 : 24, fontWeight: 700, color: dark ? '#f0f0f5' : '#1a1a2e', letterSpacing: '-0.5px' },
-  sub: { margin: '0 0 28px', color: dark ? '#888' : '#777', fontSize: 14 },
+  logo: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 },
+  logoIcon: { fontSize: 28, color: '#f1c40f' },
+  logoText: { fontSize: 22, fontWeight: 700, color: dark ? '#fff' : '#1a1a2e', letterSpacing: '-0.5px' },
+  title: { margin: '0 0 6px', fontSize: 26, fontWeight: 700, color: dark ? '#f0f0f5' : '#1a1a2e', letterSpacing: '-0.5px' },
+  sub: { margin: '0 0 36px', color: dark ? '#888' : '#777', fontSize: 15 },
   error: { background: '#ff4d4d22', border: '1px solid #ff4d4d55', color: '#ff6b6b', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13 },
-  field: { marginBottom: 16 },
-  label: { display: 'block', marginBottom: 6, fontSize: 13, fontWeight: 500, color: dark ? '#aaa' : '#555' },
+  field: { marginBottom: 20 },
+  label: { display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 500, color: dark ? '#aaa' : '#555' },
   input: {
     width: '100%',
-    padding: '14px',
+    padding: '16px',
     background: dark ? '#222230' : '#f8f9fc',
     border: `1px solid ${dark ? '#333' : '#dde1ec'}`,
     borderRadius: 12,
     color: dark ? '#f0f0f5' : '#1a1a2e',
-    fontSize: 16, // Better for mobile accessibility
+    fontSize: 16,
     outline: 'none',
     boxSizing: 'border-box',
   },
   btn: {
     width: '100%',
-    padding: '16px',
+    padding: '18px',
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
-    color: '#fff', border: 'none', borderRadius: 10,
-    fontSize: 15, fontWeight: 600, cursor: 'pointer', marginTop: 8,
+    color: '#fff', border: 'none', borderRadius: 12,
+    fontSize: 16, fontWeight: 600, cursor: 'pointer', marginTop: 12,
   },
-  switchText: { textAlign: 'center', marginTop: 20, fontSize: 13, color: dark ? '#888' : '#777' },
+  switchText: { textAlign: 'center', marginTop: 24, fontSize: 14, color: dark ? '#888' : '#777' },
   link: { color: '#6c63ff', cursor: 'pointer', fontWeight: 600 },
 });
