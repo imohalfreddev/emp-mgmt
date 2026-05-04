@@ -120,18 +120,20 @@ const styles = (dark, isMobile) => ({
   page: {
     minHeight: '100vh',
     display: 'flex',
-    alignItems: 'center',
+    // Moves the card to the top on mobile so it doesn't look lost in the middle
+    alignItems: isMobile ? 'flex-start' : 'center', 
     justifyContent: 'center',
     background: dark ? '#0f0f13' : '#f4f6fb',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     position: 'relative',
-    padding: isMobile ? '20px' : '0', // Prevents card from touching screen edges
+    // Minimal side padding to maximize card width on mobile
+    padding: isMobile ? '40px 15px' : '0', 
     boxSizing: 'border-box',
   },
   themeBtn: {
     position: 'absolute',
-    top: isMobile ? 10 : 20, 
-    right: isMobile ? 10 : 20,
+    top: isMobile ? 15 : 20, 
+    right: isMobile ? 15 : 20,
     background: dark ? '#18181f' : '#fff',
     border: `1px solid ${dark ? '#333' : '#ddd'}`,
     borderRadius: 8,
@@ -144,34 +146,35 @@ const styles = (dark, isMobile) => ({
     background: dark ? '#18181f' : '#ffffff',
     border: `1px solid ${dark ? '#2a2a35' : '#e5e7ef'}`,
     borderRadius: 16,
-    padding: isMobile ? '30px 24px' : '40px 36px',
+    padding: isMobile ? '32px 20px' : '40px 36px',
     width: '100%',
-    maxWidth: 400,
+    // Allows the card to take up more space on mobile devices
+    maxWidth: isMobile ? '100%' : 400, 
     boxShadow: dark ? '0 20px 60px rgba(0,0,0,0.4)' : '0 8px 40px rgba(0,0,0,0.08)',
     boxSizing: 'border-box',
   },
   logo: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 },
   logoIcon: { fontSize: 24 },
   logoText: { fontSize: 20, fontWeight: 700, color: dark ? '#fff' : '#1a1a2e', letterSpacing: '-0.5px' },
-  title: { margin: '0 0 4px', fontSize: isMobile ? 20 : 24, fontWeight: 700, color: dark ? '#f0f0f5' : '#1a1a2e', letterSpacing: '-0.5px' },
+  title: { margin: '0 0 4px', fontSize: isMobile ? 22 : 24, fontWeight: 700, color: dark ? '#f0f0f5' : '#1a1a2e', letterSpacing: '-0.5px' },
   sub: { margin: '0 0 28px', color: dark ? '#888' : '#777', fontSize: 14 },
   error: { background: '#ff4d4d22', border: '1px solid #ff4d4d55', color: '#ff6b6b', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13 },
   field: { marginBottom: 16 },
   label: { display: 'block', marginBottom: 6, fontSize: 13, fontWeight: 500, color: dark ? '#aaa' : '#555' },
   input: {
-    width: '100%', // Changed from 90% for better alignment
-    padding: '12px 14px',
+    width: '100%',
+    padding: '14px',
     background: dark ? '#222230' : '#f8f9fc',
     border: `1px solid ${dark ? '#333' : '#dde1ec'}`,
     borderRadius: 12,
     color: dark ? '#f0f0f5' : '#1a1a2e',
-    fontSize: 14,
+    fontSize: 16, // Better for mobile accessibility
     outline: 'none',
     boxSizing: 'border-box',
   },
   btn: {
-    width: '100%', // Changed from 90%
-    padding: '14px',
+    width: '100%',
+    padding: '16px',
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
     color: '#fff', border: 'none', borderRadius: 10,
     fontSize: 15, fontWeight: 600, cursor: 'pointer', marginTop: 8,
