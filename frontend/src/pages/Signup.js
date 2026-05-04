@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../utils/api';
 
+// Custom hook to handle responsiveness
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return width;
+}
+
 export default function Signup({ onSwitch }) {
   const { login } = useAuth();
   const { dark, toggle } = useTheme();
+  const width = useWindowWidth();
+  
   const [form, setForm] = useState({ company_name: '', name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +40,9 @@ export default function Signup({ onSwitch }) {
     }
   };
 
-  const s = styles(dark);
+  // Determine if we are on a mobile screen (typical breakpoint 480px)
+  const isMobile = width <= 480;
+  const s = useMemo(() => styles(dark, isMobile), [dark, isMobile]);
 
   return (
     <div style={s.page}>
@@ -101,7 +116,7 @@ export default function Signup({ onSwitch }) {
   );
 }
 
-const styles = (dark) => ({
+const styles = (dark, isMobile) => ({
   page: {
     minHeight: '100vh',
     display: 'flex',
@@ -110,47 +125,53 @@ const styles = (dark) => ({
     background: dark ? '#0f0f13' : '#f4f6fb',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     position: 'relative',
+    padding: isMobile ? '20px' : '0', // Prevents card from touching screen edges
+    boxSizing: 'border-box',
   },
   themeBtn: {
     position: 'absolute',
-    top: 20, right: 20,
-    background: 'none',
+    top: isMobile ? 10 : 20, 
+    right: isMobile ? 10 : 20,
+    background: dark ? '#18181f' : '#fff',
     border: `1px solid ${dark ? '#333' : '#ddd'}`,
     borderRadius: 8,
     padding: '6px 12px',
     cursor: 'pointer',
     fontSize: 18,
+    zIndex: 10,
   },
   card: {
     background: dark ? '#18181f' : '#ffffff',
     border: `1px solid ${dark ? '#2a2a35' : '#e5e7ef'}`,
     borderRadius: 16,
-    padding: '40px 36px',
+    padding: isMobile ? '30px 24px' : '40px 36px',
     width: '100%',
     maxWidth: 400,
     boxShadow: dark ? '0 20px 60px rgba(0,0,0,0.4)' : '0 8px 40px rgba(0,0,0,0.08)',
+    boxSizing: 'border-box',
   },
   logo: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 },
   logoIcon: { fontSize: 24 },
   logoText: { fontSize: 20, fontWeight: 700, color: dark ? '#fff' : '#1a1a2e', letterSpacing: '-0.5px' },
-  title: { margin: '0 0 4px', fontSize: 24, fontWeight: 700, color: dark ? '#f0f0f5' : '#1a1a2e', letterSpacing: '-0.5px' },
+  title: { margin: '0 0 4px', fontSize: isMobile ? 20 : 24, fontWeight: 700, color: dark ? '#f0f0f5' : '#1a1a2e', letterSpacing: '-0.5px' },
   sub: { margin: '0 0 28px', color: dark ? '#888' : '#777', fontSize: 14 },
   error: { background: '#ff4d4d22', border: '1px solid #ff4d4d55', color: '#ff6b6b', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13 },
   field: { marginBottom: 16 },
   label: { display: 'block', marginBottom: 6, fontSize: 13, fontWeight: 500, color: dark ? '#aaa' : '#555' },
   input: {
-    width: '100%',
-    padding: '10px 14px',
+    width: '100%', // Changed from 90% for better alignment
+    padding: '12px 14px',
     background: dark ? '#222230' : '#f8f9fc',
     border: `1px solid ${dark ? '#333' : '#dde1ec'}`,
-    borderRadius: 8,
+    borderRadius: 12,
     color: dark ? '#f0f0f5' : '#1a1a2e',
     fontSize: 14,
     outline: 'none',
     boxSizing: 'border-box',
   },
   btn: {
-    width: '100%', padding: '12px',
+    width: '100%', // Changed from 90%
+    padding: '14px',
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
     color: '#fff', border: 'none', borderRadius: 10,
     fontSize: 15, fontWeight: 600, cursor: 'pointer', marginTop: 8,
