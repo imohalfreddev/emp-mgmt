@@ -40,7 +40,6 @@ export default function Signup({ onSwitch }) {
     }
   };
 
-  // Determine if we are on a mobile screen
   const isMobile = width <= 480;
   const s = useMemo(() => styles(dark, isMobile), [dark, isMobile]);
 
@@ -120,18 +119,18 @@ const styles = (dark, isMobile) => ({
   page: {
     minHeight: '100vh',
     display: 'flex',
-    alignItems: 'center', // Keep centered as per the screenshot
+    alignItems: 'center',
     justifyContent: 'center',
     background: dark ? '#0f0f13' : '#f4f6fb',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     position: 'relative',
-    padding: isMobile ? '24px' : '0', 
+    padding: 0, // Zero padding to ensure the card can touch the edges
     boxSizing: 'border-box',
   },
   themeBtn: {
     position: 'absolute',
-    top: isMobile ? 15 : 20, 
-    right: isMobile ? 15 : 20,
+    top: isMobile ? 20 : 20, 
+    right: isMobile ? 20 : 20,
     background: 'transparent',
     border: `1px solid ${dark ? '#333' : '#ddd'}`,
     borderRadius: 8,
@@ -142,13 +141,16 @@ const styles = (dark, isMobile) => ({
   },
   card: {
     background: dark ? '#18181f' : '#ffffff',
-    border: `1px solid ${dark ? '#2a2a35' : '#e5e7ef'}`,
-    borderRadius: 24, // More rounded corners like the image
-    padding: isMobile ? '48px 28px' : '40px 36px', // Extra vertical padding
+    border: isMobile ? 'none' : `1px solid ${dark ? '#2a2a35' : '#e5e7ef'}`,
+    borderRadius: isMobile ? 0 : 24, // No rounded corners on mobile for a full-screen look
+    padding: isMobile ? '80px 24px 40px' : '40px 36px', // Extra top padding on mobile for the theme button
     width: '100%',
-    maxWidth: isMobile ? '450px' : '400px', // Wider on mobile to fill screen
-    boxShadow: dark ? '0 20px 60px rgba(0,0,0,0.5)' : '0 8px 40px rgba(0,0,0,0.08)',
+    maxWidth: isMobile ? '100%' : '400px', 
+    minHeight: isMobile ? '100vh' : 'auto', // Forces the card to take up the full height of the mobile screen
+    boxShadow: isMobile ? 'none' : (dark ? '0 20px 60px rgba(0,0,0,0.5)' : '0 8px 40px rgba(0,0,0,0.08)'),
     boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
   },
   logo: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 },
   logoIcon: { fontSize: 28, color: '#f1c40f' },
@@ -165,7 +167,7 @@ const styles = (dark, isMobile) => ({
     border: `1px solid ${dark ? '#333' : '#dde1ec'}`,
     borderRadius: 12,
     color: dark ? '#f0f0f5' : '#1a1a2e',
-    fontSize: 16,
+    fontSize: 16, // Prevents iOS zooming
     outline: 'none',
     boxSizing: 'border-box',
   },
@@ -176,6 +178,6 @@ const styles = (dark, isMobile) => ({
     color: '#fff', border: 'none', borderRadius: 12,
     fontSize: 16, fontWeight: 600, cursor: 'pointer', marginTop: 12,
   },
-  switchText: { textAlign: 'center', marginTop: 24, fontSize: 14, color: dark ? '#888' : '#777' },
+  switchText: { textAlign: 'center', marginTop: 'auto', paddingBottom: 20, fontSize: 14, color: dark ? '#888' : '#777' },
   link: { color: '#6c63ff', cursor: 'pointer', fontWeight: 600 },
 });
