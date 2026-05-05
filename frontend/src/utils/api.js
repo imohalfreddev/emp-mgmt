@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 export const api = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
@@ -16,6 +16,11 @@ export const api = async (endpoint, options = {}) => {
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Request failed' }));
     throw new Error(err.detail || 'Request failed');
+  }
+
+  // Prevents "unexpected end of JSON input" errors on 204 responses
+  if (res.status === 204) {
+    return null;
   }
 
   return res.json();
