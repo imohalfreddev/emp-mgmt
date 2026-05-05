@@ -10,6 +10,7 @@ export default function Login({ onSwitch }) {
   const [form, setForm] = useState({ email: '', password: '', company_id: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     api('/api/companies').then(setCompanies).catch(() => {});
@@ -76,15 +77,23 @@ export default function Login({ onSwitch }) {
           </div>
 
           <div style={s.field}>
-            <label style={s.label}>Password</label>
-            <input
-              style={s.input}
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={e => setForm({ ...form, password: e.target.value })}
-              required
-            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <label style={s.label}>Password</label>
+              <span style={s.forgot}>Forgot password?</span>
+            </div>
+            <div style={s.passwordWrap}>
+              <input
+                style={s.passwordInput}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                required
+              />
+              <button type="button" style={s.eyeBtn} onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
 
           <button type="submit" style={s.btn} disabled={loading}>
@@ -184,6 +193,23 @@ const styles = (dark) => ({
     outline: 'none',
     boxSizing: 'border-box',
     appearance: 'none',
+  },
+  passwordWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
+  passwordInput: {
+    width: '100%', padding: '10px 44px 10px 14px',
+    background: dark ? '#222230' : '#f8f9fc',
+    border: `1px solid ${dark ? '#333' : '#dde1ec'}`,
+    borderRadius: 8, color: dark ? '#f0f0f5' : '#1a1a2e',
+    fontSize: 14, outline: 'none', boxSizing: 'border-box',
+  },
+  eyeBtn: {
+    position: 'absolute', right: 12,
+    background: 'none', border: 'none',
+    cursor: 'pointer', fontSize: 16, padding: 0,
+  },
+  forgot: {
+    fontSize: 12, color: '#6c63ff',
+    cursor: 'pointer', fontWeight: 600,
   },
   btn: {
     width: '100%',

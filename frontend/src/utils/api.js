@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 export const api = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
