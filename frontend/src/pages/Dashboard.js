@@ -3,6 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../utils/api';
 
+// ==========================================
+// DESIGN VERSION 1 (Primary Dashboard)
+// ==========================================
 export default function Dashboard() {
   const { user } = useAuth();
   const { dark } = useTheme();
@@ -282,7 +285,28 @@ const styles = (dark) => ({
   },
 });
 
-  const s = styles(dark);
+// ==========================================
+// DESIGN VERSION 2 (Alternate Dashboard)
+// I wrapped this so you don't lose the code and your app won't crash!
+// ==========================================
+export function DashboardAlternate() {
+  const { user } = useAuth();
+  const { dark } = useTheme();
+  const [stats, setStats] = useState(null);
+  const [admin, setAdmin] = useState(null);
+  const [recentMessages, setRecentMessages] = useState([]);
+  const [recentLeaves, setRecentLeaves] = useState([]);
+
+  useEffect(() => {
+    api('/api/dashboard/stats').then(setStats).catch(() => {});
+    api('/api/messages').then(data => setRecentMessages(data.slice(0, 4))).catch(() => {});
+    api('/api/leaves').then(data => setRecentLeaves(data.slice(0, 4))).catch(() => {});
+    if (user?.role === 'employee') {
+      api('/api/my-admin').then(setAdmin).catch(() => {});
+    }
+  }, [user]);
+
+  const s = stylesAlternate(dark);
   const isAdmin = user?.role === 'admin';
 
   const statCards = [
@@ -369,7 +393,7 @@ const styles = (dark) => ({
                   <div style={s.leaveName}>{leave.user_name}</div>
                   <div style={s.leaveDates}>{leave.start_date} — {leave.end_date}</div>
                 </div>
-                <span style={{ ...s.statusBadge, ...statusColor(leave.status) }}>
+                <span style={{ ...s.statusBadge, ...statusColorAlternate(leave.status) }}>
                   {leave.status}
                 </span>
               </div>
@@ -381,13 +405,13 @@ const styles = (dark) => ({
   );
 }
 
-const statusColor = (status) => {
+const statusColorAlternate = (status) => {
   if (status === 'approved') return { background: '#00c85322', color: '#00c853' };
   if (status === 'rejected') return { background: '#ff4d4d22', color: '#ff4d4d' };
   return { background: '#f5a62322', color: '#f5a623' };
 };
 
-const styles = (dark) => ({
+const stylesAlternate = (dark) => ({
   page: {
     padding: '32px',
     maxWidth: 1100,
