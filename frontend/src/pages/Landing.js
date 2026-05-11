@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Landing({ onLogin, onSignup }) {
   const { dark, toggle } = useTheme();
-  const s = styles(dark);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  const s = styles(dark, isMobile);
 
   const features = [
     { icon: '👥', title: 'Team Management', desc: 'Add and manage employees with role-based access control' },
@@ -24,7 +32,9 @@ export default function Landing({ onLogin, onSignup }) {
         </div>
         <div style={s.navRight}>
           <button onClick={toggle} style={s.themeBtn}>{dark ? '☀️' : '🌙'}</button>
-          <button onClick={onLogin} style={s.navLoginBtn}>Sign In</button>
+          {!isMobile && (
+            <button onClick={onLogin} style={s.navLoginBtn}>Sign In</button>
+          )}
           <button onClick={onSignup} style={s.navSignupBtn}>Get Started →</button>
         </div>
       </nav>
@@ -91,16 +101,18 @@ export default function Landing({ onLogin, onSignup }) {
   );
 }
 
-const styles = (dark) => ({
+const styles = (dark, isMobile) => ({
   page: {
     minHeight: '100vh',
     background: dark ? '#0f0f13' : '#f8f9fc',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     color: dark ? '#f0f0f5' : '#1a1a2e',
   },
+
+  // ── Navbar ──────────────────────────────────────────────
   nav: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '16px 40px',
+    padding: isMobile ? '12px 16px' : '16px 40px',   // tighter on mobile
     borderBottom: `1px solid ${dark ? '#2a2a35' : '#e8eaf2'}`,
     background: dark ? '#13131a' : '#fff',
     position: 'sticky', top: 0, zIndex: 100,
@@ -113,7 +125,7 @@ const styles = (dark) => ({
     fontSize: 18,
   },
   navLogoText: { fontSize: 18, fontWeight: 800, color: dark ? '#fff' : '#1a1a2e' },
-  navRight: { display: 'flex', alignItems: 'center', gap: 12 },
+  navRight: { display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 },
   themeBtn: {
     background: 'none', border: `1px solid ${dark ? '#333' : '#ddd'}`,
     borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 16,
@@ -126,13 +138,19 @@ const styles = (dark) => ({
   },
   navSignupBtn: {
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
-    border: 'none', borderRadius: 8, padding: '8px 18px',
-    cursor: 'pointer', color: '#fff', fontSize: 14, fontWeight: 700,
+    border: 'none', borderRadius: 8,
+    padding: isMobile ? '8px 14px' : '8px 18px',
+    cursor: 'pointer', color: '#fff',
+    fontSize: isMobile ? 13 : 14,
+    fontWeight: 700,
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
+    whiteSpace: 'nowrap',                             // prevent text wrapping
   },
+
+  // ── Hero ─────────────────────────────────────────────────
   hero: {
     textAlign: 'center',
-    padding: '80px 40px 60px',
+    padding: isMobile ? '40px 20px 36px' : '80px 40px 60px',  // less top padding on mobile
     maxWidth: 700,
     margin: '0 auto',
   },
@@ -140,14 +158,15 @@ const styles = (dark) => ({
     display: 'inline-block',
     background: dark ? '#6c63ff22' : '#6c63ff15',
     color: '#6c63ff',
-    fontSize: 13, fontWeight: 700,
-    padding: '6px 16px', borderRadius: 20,
-    marginBottom: 24,
+    fontSize: isMobile ? 12 : 13, fontWeight: 700,
+    padding: '6px 14px', borderRadius: 20,
+    marginBottom: 20,
   },
   heroTitle: {
-    fontSize: 54, fontWeight: 900,
-    lineHeight: 1.1, margin: '0 0 20px',
-    letterSpacing: '-1.5px',
+    fontSize: isMobile ? 36 : 54,                    // 36px on mobile vs 54px desktop
+    fontWeight: 900,
+    lineHeight: 1.1, margin: '0 0 16px',
+    letterSpacing: isMobile ? '-0.5px' : '-1.5px',
   },
   heroGradient: {
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
@@ -155,10 +174,20 @@ const styles = (dark) => ({
     WebkitTextFillColor: 'transparent',
   },
   heroSub: {
-    fontSize: 17, color: dark ? '#888' : '#666',
-    lineHeight: 1.7, margin: '0 0 36px',
+    fontSize: isMobile ? 15 : 17,
+    color: dark ? '#aaa' : '#666',                   // slightly brighter on dark
+    lineHeight: 1.7, margin: '0 0 28px',
   },
-  heroBtns: { display: 'flex', gap: 14, justifyContent: 'center', marginBottom: 36 },
+  heroBtns: {
+    display: 'flex',
+    flexDirection: 'column',                          // always stack vertically
+    gap: 12,
+    alignItems: 'stretch',                            // full width buttons
+    marginBottom: 28,
+    maxWidth: isMobile ? '100%' : 320,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
   heroCta: {
     padding: '14px 28px',
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
@@ -171,49 +200,57 @@ const styles = (dark) => ({
     padding: '14px 28px',
     background: 'none',
     border: `1.5px solid ${dark ? '#333' : '#ddd'}`,
-    color: dark ? '#aaa' : '#555',
+    color: dark ? '#ccc' : '#555',                   // brighter text on dark
     borderRadius: 12, fontSize: 16, fontWeight: 600,
     cursor: 'pointer',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
   },
-  heroStats: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12 },
-  heroStat: { fontSize: 13, color: dark ? '#666' : '#999' },
-  heroStatNum: { fontWeight: 700, color: dark ? '#aaa' : '#555' },
+  heroStats: {
+    display: 'flex', justifyContent: 'center', alignItems: 'center',
+    gap: isMobile ? 8 : 12,
+    flexWrap: 'wrap',                                 // wrap on very narrow screens
+  },
+  heroStat: { fontSize: isMobile ? 12 : 13, color: dark ? '#777' : '#999' },
+  heroStatNum: { fontWeight: 700, color: dark ? '#bbb' : '#555' },
   heroStatDot: { color: dark ? '#444' : '#ccc' },
+
+  // ── Features ─────────────────────────────────────────────
   featuresSection: {
-    padding: '60px 40px',
+    padding: isMobile ? '40px 16px' : '60px 40px',
     maxWidth: 1000,
     margin: '0 auto',
     textAlign: 'center',
   },
   featuresTitle: {
-    fontSize: 36, fontWeight: 800, margin: '0 0 8px',
+    fontSize: isMobile ? 26 : 36, fontWeight: 800, margin: '0 0 8px',
     letterSpacing: '-0.5px',
   },
-  featuresSub: { fontSize: 15, color: dark ? '#888' : '#777', margin: '0 0 40px' },
+  featuresSub: { fontSize: 15, color: dark ? '#888' : '#777', margin: '0 0 32px' },
   featuresGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 20,
+    gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',  // 1 col mobile, 3 desktop
+    gap: isMobile ? 12 : 20,
     textAlign: 'left',
   },
   featureCard: {
     background: dark ? '#18181f' : '#fff',
     border: `1px solid ${dark ? '#2a2a35' : '#e8eaf2'}`,
-    borderRadius: 14, padding: '24px',
+    borderRadius: 14, padding: '20px',
   },
-  featureIcon: { fontSize: 28, marginBottom: 14 },
-  featureTitle: { fontSize: 15, fontWeight: 700, marginBottom: 8, color: dark ? '#f0f0f5' : '#1a1a2e' },
+  featureIcon: { fontSize: 28, marginBottom: 12 },
+  featureTitle: { fontSize: 15, fontWeight: 700, marginBottom: 6, color: dark ? '#f0f0f5' : '#1a1a2e' },
   featureDesc: { fontSize: 13, color: dark ? '#888' : '#777', lineHeight: 1.6 },
+
+  // ── CTA ──────────────────────────────────────────────────
   ctaSection: {
     textAlign: 'center',
-    padding: '60px 40px',
+    padding: isMobile ? '40px 20px' : '60px 40px',
     background: dark ? '#18181f' : '#fff',
     borderTop: `1px solid ${dark ? '#2a2a35' : '#e8eaf2'}`,
     borderBottom: `1px solid ${dark ? '#2a2a35' : '#e8eaf2'}`,
   },
-  ctaTitle: { fontSize: 32, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.5px' },
-  ctaSub: { fontSize: 15, color: dark ? '#888' : '#777', margin: '0 0 28px' },
+  ctaTitle: { fontSize: isMobile ? 24 : 32, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.5px' },
+  ctaSub: { fontSize: 15, color: dark ? '#888' : '#777', margin: '0 0 24px' },
   ctaBtn: {
     padding: '14px 32px',
     background: 'linear-gradient(135deg, #6c63ff, #48a9fe)',
@@ -221,11 +258,19 @@ const styles = (dark) => ({
     fontSize: 16, fontWeight: 700, cursor: 'pointer',
     boxShadow: '0 6px 24px rgba(108,99,255,0.4)',
     fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
+    width: isMobile ? '100%' : 'auto',               // full width on mobile
   },
+
+  // ── Footer ───────────────────────────────────────────────
   footer: {
-    padding: '24px 40px',
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: isMobile ? '20px 16px' : '24px 40px',
+    display: 'flex',
+    flexDirection: isMobile ? 'column' : 'row',      // stack on mobile
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: isMobile ? 6 : 0,
     color: dark ? '#555' : '#aaa', fontSize: 13,
+    textAlign: isMobile ? 'center' : 'left',
   },
   footerLogo: { display: 'flex', gap: 6, alignItems: 'center' },
   footerText: {},
